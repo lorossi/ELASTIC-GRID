@@ -2,8 +2,8 @@ class Sketch extends Engine {
   preload() {
     this._scl = 25;
     this._r = 6;
-    this._omega = 10;
-    this._duration = 600;
+    this._omega = 4;
+    this._duration = 900;
     this._recording = false;
   }
 
@@ -101,5 +101,7 @@ class Sketch extends Engine {
         console.log("%c Recording ended", "color: red; font-size: 2rem");
       }
     }
+
+    if (this.frameCount % 30 == 0) console.log(this.frameRate);
   }
 }
