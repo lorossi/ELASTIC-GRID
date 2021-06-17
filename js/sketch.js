@@ -11,7 +11,7 @@ class Sketch extends Engine {
     // color and aberration
     this._circle_colors = [
       {
-        color: new Color(255, 0, 0),
+        color: new Color(255, 0, 255),
         dpos: { x: 3, y: 0 },
       },
       {
@@ -20,7 +20,7 @@ class Sketch extends Engine {
       },
       {
         color: new Color(0, 0, 255),
-        dpos: { x: 0, y: 3 },
+        dpos: { x: 0, y: 4 },
       },
       {
         color: new Color(200, 200, 200),
@@ -89,7 +89,7 @@ class Sketch extends Engine {
     // handle recording
     if (this._recording) {
       if (this.frameCount % 30 == 0) {
-        this._update = `Record: ${parseInt(percent * 100)}%`;
+        const update = `Record: ${parseInt(percent * 100)}%`;
         console.log(`%c ${update}`, "color: yellow; font-size: 0.75rem");
       }
       if (this.frameCount < this._duration) {
@@ -101,7 +101,5 @@ class Sketch extends Engine {
         console.log("%c Recording ended", "color: red; font-size: 2rem");
       }
     }
-
-    if (this.frameCount % 30 == 0) console.log(this.frameRate);
   }
 }
