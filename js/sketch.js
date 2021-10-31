@@ -1,37 +1,53 @@
 class Sketch extends Engine {
   preload() {
-    this._scl = 25;
-    this._r = 6;
+    // distance between circles
+    this._scl = 40;
+    // radius of circles
+    this._r = 10;
+    // time related variables
     this._omega = 4;
     this._duration = 900;
     this._recording = false;
   }
 
   setup() {
-    // color and aberration
-    this._circle_colors = [
-      {
+    // color aberration
+    this._circle_colors = [{
         color: new Color(255, 0, 255),
-        dpos: { x: 3, y: 0 },
+        dpos: {
+          x: this._r / 2,
+          y: 0
+        },
       },
       {
         color: new Color(255, 255, 0),
-        dpos: { x: -3, y: 0 },
+        dpos: {
+          x: -this._r / 2,
+          y: 0
+        },
       },
       {
         color: new Color(0, 0, 255),
-        dpos: { x: 0, y: 4 },
+        dpos: {
+          x: 0,
+          y: this._r / 2
+        },
       },
       {
-        color: new Color(200, 200, 200),
-        dpos: { x: 0, y: 0 },
+        color: new Color(150, 150, 150),
+        dpos: {
+          x: 0,
+          y: 0
+        },
       }
     ];
     this._background = new Color(15, 15, 15);
     // setup capturer
     this._capturer_started = false;
     if (this._recording) {
-      this._capturer = new CCapture({ format: "png" });
+      this._capturer = new CCapture({
+        format: "png"
+      });
     }
   }
 
@@ -43,21 +59,25 @@ class Sketch extends Engine {
       console.log("%c Recording started", "color: green; font-size: 2rem");
     }
 
+    // time variables calculation
     const percent = (this.frameCount % this._duration) / this._duration;
     const time_theta = percent * Math.PI * 2;
 
+    // clear background
     this.ctx.save();
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.ctx.fillStyle = this._background;
     this.ctx.fillRect(0, 0, this.width, this.height);
     this.ctx.globalCompositeOperation = "screen";
 
+    // draw each circle
     for (let y = -this._scl; y <= this.height + this._scl; y += this._scl) {
       const height_ratio = y / this.height;
       for (let x = -this._scl; x <= this.width + this._scl; x += this._scl) {
         const width_ratio = x / this.width;
 
         this.ctx.save();
+        // calculate displacement
         const phi = height_ratio * Math.PI * 2 * 4;
         const theta = width_ratio * Math.PI * 2 * 4;
         const dx = Math.cos(phi) * Math.cos(theta) * this._r * Math.sin(time_theta * this._omega);
@@ -88,12 +108,12 @@ class Sketch extends Engine {
 
     // handle recording
     if (this._recording) {
-      if (this.frameCount % 30 == 0) {
-        const update = `Record: ${parseInt(percent * 100)}%`;
-        console.log(`%c ${update}`, "color: yellow; font-size: 0.75rem");
-      }
       if (this.frameCount < this._duration) {
         this._capturer.capture(this._canvas);
+        if (this.frameCount % 30 == 0) {
+          const update = `Record: ${parseInt(percent * 100)}%`;
+          console.log(`%c ${update}`, "color: yellow; font-size: 0.75rem");
+        }
       } else {
         this._recording = false;
         this._capturer.stop();
