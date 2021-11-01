@@ -5,7 +5,6 @@ class Sketch extends Engine {
     // radius of circles
     this._r = 7;
     // time related variables
-    this._omega = 1;
     this._duration = 250;
     this._recording = false;
   }
@@ -80,11 +79,11 @@ class Sketch extends Engine {
 
         // calculate displacement
 
-        const dx = Math.cos(phi) * Math.cos(theta) * this._r * Math.sin(time_theta * this._omega);
-        const dy = Math.sin(phi) * Math.sin(theta) * this._r * Math.cos(time_theta * this._omega);
+        const dx = Math.cos(phi) * Math.cos(theta) * this._r * Math.sin(time_theta);
+        const dy = Math.sin(phi) * Math.sin(theta) * this._r * Math.cos(time_theta);
 
-        const dr = Math.cos(phi + Math.PI) * Math.cos(theta + Math.PI) * this._r * 0.5;
-        const da = (dx * dx + dy * dy) / (this._r * this._r) * 1.25;
+        const dr = Math.cos(phi + Math.PI) * Math.cos(theta + Math.PI) * this._r * 0.25 + 0.75;
+        const da = (dx * dx + dy * dy) / (this._r * this._r) ;
 
         this.ctx.save();
         this.ctx.translate(x + dx, y + dy);
