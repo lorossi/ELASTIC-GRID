@@ -1,12 +1,12 @@
 class Sketch extends Engine {
   preload() {
     // distance between circles
-    this._scl = 40;
+    this._scl = 30;
     // radius of circles
-    this._r = 10;
+    this._r = 7;
     // time related variables
-    this._omega = 4;
-    this._duration = 900;
+    this._omega = 1;
+    this._duration = 250;
     this._recording = false;
   }
 
@@ -14,28 +14,28 @@ class Sketch extends Engine {
     // color aberration
     this._circle_colors = [{
         color: new Color(255, 0, 255),
-        dpos: {
+        d_pos: {
           x: this._r / 2,
-          y: 0
+          y: -this._r / 2,
         },
       },
       {
         color: new Color(255, 255, 0),
-        dpos: {
+        d_pos: {
           x: -this._r / 2,
-          y: 0
+          y: -this._r / 2,
         },
       },
       {
         color: new Color(0, 0, 255),
-        dpos: {
+        d_pos: {
           x: 0,
-          y: this._r / 2
+          y: -this._r,
         },
       },
       {
-        color: new Color(150, 150, 150),
-        dpos: {
+        color: new Color(220, 220, 220),
+        d_pos: {
           x: 0,
           y: 0
         },
@@ -71,28 +71,29 @@ class Sketch extends Engine {
     this.ctx.globalCompositeOperation = "screen";
 
     // draw each circle
-    for (let y = -this._scl; y <= this.height + this._scl; y += this._scl) {
-      const height_ratio = y / this.height;
-      for (let x = -this._scl; x <= this.width + this._scl; x += this._scl) {
-        const width_ratio = x / this.width;
-
-        this.ctx.save();
-        // calculate displacement
+    for (let x = -this._scl; x <= this.width + this._scl; x += this._scl) {
+      const width_ratio = x / this.width;
+      const theta = width_ratio * Math.PI * 2 * 4;
+      for (let y = -this._scl; y <= this.height + this._scl; y += this._scl) {
+        const height_ratio = y / this.height;
         const phi = height_ratio * Math.PI * 2 * 4;
-        const theta = width_ratio * Math.PI * 2 * 4;
+
+        // calculate displacement
+
         const dx = Math.cos(phi) * Math.cos(theta) * this._r * Math.sin(time_theta * this._omega);
         const dy = Math.sin(phi) * Math.sin(theta) * this._r * Math.cos(time_theta * this._omega);
 
         const dr = Math.cos(phi + Math.PI) * Math.cos(theta + Math.PI) * this._r * 0.5;
         const da = (dx * dx + dy * dy) / (this._r * this._r) * 1.25;
 
+        this.ctx.save();
         this.ctx.translate(x + dx, y + dy);
 
         for (let i = 0; i < this._circle_colors.length; i++) {
           const current_color = this._circle_colors[i];
 
           this.ctx.save();
-          this.ctx.translate(current_color.dpos.x * da, current_color.dpos.y * da);
+          this.ctx.translate(current_color.d_pos.x * da, current_color.d_pos.y * da);
           this.ctx.fillStyle = current_color.color.rgb;
           this.ctx.beginPath();
           this.ctx.arc(0, 0, this._r + dr, 0, Math.PI * 2);
